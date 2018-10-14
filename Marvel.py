@@ -12,6 +12,10 @@ def alleCharacters():
     hash_object = hashlib.md5(stringToHash.encode())
     md5Hash = hash_object.hexdigest()
     apiUrl = 'http://gateway.marvel.com/v1/public/characters?ts={}&apikey={}&hash={}'.format(timestamp, publicApiKey, md5Hash)
+    print(apiUrl)   # deze moet op gegeven moment uit de code weggehaald worden
+    # voorbeeld voor hoe het eruit komt te zien en deze kun je dan in Visual Studio Code gebruiken
+    # http://gateway.marvel.com/v1/public/characters?ts=1539531767.861436&apikey=ce72ea27bb97e27dbf4b8be2decb44ee&hash=1efc26ce5b2905641dd9413bfe6662d8
+
 
     # Aanroepen van API Url
 
@@ -38,8 +42,9 @@ def geefHint(gekozenCharacter):
 print('quizgestart')
 naam = input('Wat is je naam: ')
 allCharacters = alleCharacters() #Finish
-gekozenCharacter = kiesCharacter(allCharacters)#nog open
+gekozenCharacter = kiesCharacter(allCharacters)#nog open #LET OP: Er mag geen Character gekozen worden met een lege discription, daar kunnen we geen hints vandaan halen
 
 hint = geefHint(gekozenCharacter)# nog open
+# hints eerst uit discription halen van de gekozen character
 
 
