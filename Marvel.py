@@ -2,7 +2,7 @@ import time
 import hashlib
 import json
 
-def alleCharacters():
+def MarvelCharacters():
     #Maken van de API Url
 
     timestamp = time.time()
@@ -23,28 +23,28 @@ def alleCharacters():
     response = requests.get(apiUrl)
 
     # Resultaten van API in Json omzetten naar dictionary
-    apiResultaten = json.loads(response.text)
+    apiResults = json.loads(response.text)
 
     # Alle characters uitlezen uit API
-    allCharacters = apiResultaten['data']['results']
+    allCharacters = apiResults['data']['results']
 
     return  allCharacters
 
-def kiesCharacter(allCharacters):
+def chooseCharacter(allCharacters):
     # Code aanmaken om een character random te kiezen
     return allCharacters[0]
 
-def geefHint(gekozenCharacter):
+def giveHint(chosenCharacter):
     # Code aanmaken om hint te genereren
     return "tekst"
 
 # start programma
 print('quizgestart')
-naam = input('Wat is je naam: ')
-allCharacters = alleCharacters() #Finish
-gekozenCharacter = kiesCharacter(allCharacters)#nog open #LET OP: Er mag geen Character gekozen worden met een lege discription, daar kunnen we geen hints vandaan halen
+name = input('Wat is je naam: ')
+allCharacters = MarvelCharacters() #Finish
+chosenCharacter = chooseCharacter(allCharacters)#nog open #LET OP: Er mag geen Character gekozen worden met een lege discription, daar kunnen we geen hints vandaan halen
 
-hint = geefHint(gekozenCharacter)# nog open
+hint = giveHint(chosenCharacter)# nog open
 # hints eerst uit discription halen van de gekozen character
 
 
