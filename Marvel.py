@@ -6,7 +6,7 @@ import requests
 import math
 
 
-def getAllCharactersFromAPI():
+def MarvelCharacters():
     #Maken van de API Url
 
     timestamp = time.time()
@@ -49,8 +49,6 @@ def chooseRandomCharacter(allCharacters, excludedCharacter={"name": ""}):
 
 
 def generateHint(chosenCharacter):
-    # Code aanmaken om hint te genereren
-
     description = str(chosenCharacter["description"])
     hint = description.replace(chosenCharacter["name"], "[...]")
     return hint
@@ -83,11 +81,13 @@ def generateOptions(correctCharacter, allCharacters):
 # start programma
 print('quizgestart')
 name = input('Wat is je naam: ')
-allCharacters = getAllCharactersFromAPI() #Finish
+
+allCharacters = MarvelCharacters() #Finish
 chosenCharacter = chooseRandomCharacter(allCharacters)#nog open #LET OP: Er mag geen Character gekozen worden met een lege discription, daar kunnen we geen hints vandaan halen
-print(chosenCharacter)
+
 hint = generateHint(chosenCharacter)# nog open
-print(hint)
+print(hint)# nog open
+
 # hints eerst uit discription halen van de gekozen character
 
 options = generateOptions(chosenCharacter, allCharacters)
