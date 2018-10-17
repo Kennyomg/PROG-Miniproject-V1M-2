@@ -39,7 +39,7 @@ def giveHint(chosenCharacter):
     return "tekst"
 
 # start programma
-print('quizgestart')
+print('quiz gestart')
 name = input('Wat is je naam: ')
 allCharacters = MarvelCharacters() #Finish
 chosenCharacter = chooseCharacter(allCharacters)#nog open #LET OP: Er mag geen Character gekozen worden met een lege discription, daar kunnen we geen hints vandaan halen
