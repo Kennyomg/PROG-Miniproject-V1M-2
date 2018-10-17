@@ -22,4 +22,3 @@ def chooseCharacter(apilst):
 
 
 
-chooseCharacter(MarvelCharacters())
