@@ -3,6 +3,7 @@ import hashlib
 import json
 import random
 import requests  # pip install requests uitvoeren in Terminal om te installeren voor de 1e keer
+import sqlite3
 
 
 #def setTimer(ans):
@@ -72,11 +73,38 @@ def chooseCharacter(apilst):
 def giveHint(chosenCharacter):
     # chooseCharacter(MarvelCharacters())
     description: str = chosenCharacter["description"]
+    filterchardots = chosenCharacter["character"].replace('.', '')
+    filtercharleftbracket = filterchardots.replace('(', '')
+    filtercharrightbracket = filtercharleftbracket.replace(')', '')
+    filteredchar = filtercharrightbracket.split(' ')
 
-    description.replace(chosenCharacter["character"], "___")
+    # per een pakken, if statement of loop
+    for i in range(len(filteredchar)):
+        description = description.replace(filteredchar[i], "_")
 
-    print(description)
+    return description
 
+
+def saveScore(name: str, score: int):
+    conn = sqlite3.connect('highscore.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS highscore
+                (date DATETIME, name TEXT, score INT)''')
+
+    c.execute("INSERT INTO highscore VALUES (date('now'),?,?)", (name, score))
+
+    conn.commit()
+    conn.close()
+
+
+def loadHighScore():
+    conn = sqlite3.connect('highscore.db')
+    c = conn.cursor()
+
+    for row in c.execute("SELECT * FROM highscore"):
+        print(row)
+
+    conn.close()
 
 # start programma
 print('quiz gestart')
@@ -94,11 +122,12 @@ while True:
         character = input("Kies het goede antwoord\n 'a', 'b', 'c' of 'd' ")  # If the first answer was correct, player can answer this question.
         if character == 'c':
             print('U hebt de vraag goed beantwoord en u hebt ' + str(punten) + ' score verdient')
-            print('Uw totale scoren zijn: ' + str(punten * 2))
+            print('Uw totale scoren zijn: ' + str(punten))
+            saveScore(name, punten)
             break
         elif character == 'hint':
             punten = punten - 3
-            giveHint(chosenCharacter)
+            print(giveHint(chosenCharacter))
         else:
             punten = punten - 1  # The player losses one point by clicking on wrong answer.
             print('Uw antwoord is helaas fout en u hebt nu: ' + str(punten) + ' score.')
@@ -106,3 +135,5 @@ while True:
     else:
         print("Uw punten zijn op, U heeft verloren")
         break
+
+loadHighScore()
