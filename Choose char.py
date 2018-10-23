@@ -20,5 +20,5 @@ def chooseCharacter(apilst):
 
     return{'character':randomselect,'description':descriptionchar} #return character and descrip for later use
 
-
+#test
 

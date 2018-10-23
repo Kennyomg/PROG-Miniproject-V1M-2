@@ -119,10 +119,11 @@ punten = 25
 
 while True:
     if punten >= 1:  # The player should have at least one point to start the test.
-        character = input("Kies het goede antwoord\n 'a', 'b', 'c' of 'd' ")  # If the first answer was correct, player can answer this question.
+        character = input('a  b  c  d')  # If the first answer was correct, player can answer this question.
         if character == 'c':
-            print('U hebt de vraag goed beantwoord en u hebt ' + str(punten) + ' score verdient')
-            print('Uw totale scoren zijn: ' + str(punten))
+            print('Correct! you\'ve earned ' + str(punten) + ' points')
+            punten = punten+25
+            print('Your total amount of points accumilates to ' + str(punten) + ' points')
             saveScore(name, punten)
             break
         elif character == 'hint':
@@ -130,10 +131,9 @@ while True:
             print(giveHint(chosenCharacter))
         else:
             punten = punten - 1  # The player losses one point by clicking on wrong answer.
-            print('Uw antwoord is helaas fout en u hebt nu: ' + str(punten) + ' score.')
-            print('Doe het opnieuw:')  # The player can not go to the next question.
+            print('Wrong! you\'re points have gone down to ' + str(punten))
     else:
-        print("Uw punten zijn op, U heeft verloren")
+        print("Gameover")
         break
 
 loadHighScore()
