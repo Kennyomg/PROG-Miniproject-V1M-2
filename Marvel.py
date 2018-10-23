@@ -56,6 +56,7 @@ def chooseCharacter(apilst):
     for character in allCharacters:
         charlst.append(character['name'])  # add char to char list
         descriplst.append(character['description'])  # add descrip to descrip list
+        imageUrl = character["thumbnail"]["path"] +'.'+ character["thumbnail"]["extension"]
 
     randomselect = random.choice(charlst)  # select random char
 
@@ -67,8 +68,8 @@ def chooseCharacter(apilst):
         else:                                                 # if descrip of selected char non exist let prog know
             randomselect = random.choice(charlst)
 
-    charpic = character["thumbnail"]["path"] + character["thumbnail"]["extension"]
-    return {'character': randomselect, 'description': descriptionchar, 'charthumbnail': charpic}  # return character and descrip for later use
+    print(imageUrl)
+    return {'character': randomselect, 'description': descriptionchar, 'imageUrl': imageUrl}  # return character and descrip for later use
 
 
 def giveHint(chosenCharacter):
