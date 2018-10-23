@@ -67,7 +67,7 @@ def chooseCharacter(apilst):
         else:                                                 # if descrip of selected char non exist let prog know
             randomselect = random.choice(charlst)
 
-    charpic = character["thumbnail"]["path"] + character["thumbnail"]["extension"]
+    charpic = randomselect["thumbnail"]["path"] + randomselect["thumbnail"]["extension"]
     return {'character': randomselect, 'description': descriptionchar, 'charthumbnail': charpic}  # return character and descrip for later use
 
 
