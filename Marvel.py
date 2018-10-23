@@ -52,16 +52,18 @@ def chooseCharacter(apilst):
     allCharacters = apilst  # read api list
     charlst = []  # create fresh list for char names
     descriplst = []  # create fresh list for descriptions
+    imagelst = []
 
     for character in allCharacters:
         charlst.append(character['name'])  # add char to char list
         descriplst.append(character['description'])  # add descrip to descrip list
-        imageUrl = character["thumbnail"]["path"] +'.'+ character["thumbnail"]["extension"]
+        imagelst.append(character["thumbnail"]["path"] + '.' + character["thumbnail"]["extension"])
 
     randomselect = random.choice(charlst)  # select random char
 
     while True:
         descriptionchar = descriplst[charlst.index(randomselect)]
+        imageUrl = imagelst[charlst.index(randomselect)]
         if len(descriptionchar) >= 1:  # if descrip of selected char >1 let prog know
             print('{}'.format(randomselect))
             break
