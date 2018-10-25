@@ -22,7 +22,7 @@ import sqlite3
 #    return ans
 
 
-def MarvelCharacters():
+def MarvelCharacters(offset):
     # Maken van de API Url
 
     timestamp = time.time()
@@ -31,8 +31,8 @@ def MarvelCharacters():
     stringToHash = str(timestamp) + privateApiKey + publicApiKey
     hash_object = hashlib.md5(stringToHash.encode())
     md5Hash = hash_object.hexdigest()
-    apiUrl = 'http://gateway.marvel.com/v1/public/characters?ts={}&apikey={}&hash={}'.format(timestamp, publicApiKey, md5Hash)
-    print(apiUrl)   # deze moet op gegeven moment uit de code weggehaald worden
+    apiUrl = 'http://gateway.marvel.com/v1/public/characters?ts={}&apikey={}&hash={}&limit=10&offset={}'.format(timestamp, publicApiKey, md5Hash, offset)
+    #print(apiUrl)   # deze moet op gegeven moment uit de code weggehaald worden
     # voorbeeld voor hoe het eruit komt te zien en deze kun je dan in Visual Studio Code gebruiken
     # http://gateway.marvel.com/v1/public/characters?ts=1539531767.861436&apikey=ce72ea27bb97e27dbf4b8be2decb44ee&hash=1efc26ce5b2905641dd9413bfe6662d8
 
@@ -48,28 +48,53 @@ def MarvelCharacters():
     return allCharacters
 
 
+
+
+
+
 def chooseCharacter(apilst):
     allCharacters = apilst  # read api list
     charlst = []  # create fresh list for char names
     descriplst = []  # create fresh list for descriptions
+    imagelst = []
 
     for character in allCharacters:
         charlst.append(character['name'])  # add char to char list
         descriplst.append(character['description'])  # add descrip to descrip list
-        imageUrl = character["thumbnail"]["path"] +'.'+ character["thumbnail"]["extension"]
+        imagelst.append(character["thumbnail"]["path"] + '.' + character["thumbnail"]["extension"])
 
     randomselect = random.choice(charlst)  # select random char
 
+
+
     while True:
         descriptionchar = descriplst[charlst.index(randomselect)]
+        imageUrl = imagelst[charlst.index(randomselect)]
         if len(descriptionchar) >= 1:  # if descrip of selected char >1 let prog know
-            print('{}'.format(randomselect))
             break
         else:                                                 # if descrip of selected char non exist let prog know
             randomselect = random.choice(charlst)
 
-    print(imageUrl)
     return {'character': randomselect, 'description': descriptionchar, 'imageUrl': imageUrl}  # return character and descrip for later use
+
+#make a list of 4 superhero's to be used in the quiz as options
+
+
+def options(apilst,chosenCharacter):
+    allCharacters = apilst
+    charlist = []
+    options = []
+    print(chosenCharacter)
+    options.append(chosenCharacter['character'])
+    for character in allCharacters:
+        charlist.append(character['name'])
+    while True:
+        if len(options) < 4:
+            options.append(random.choice(charlist))
+        else:
+            random.shuffle(options)
+            return options
+
 
 
 def giveHint(chosenCharacter):
@@ -91,7 +116,7 @@ def saveScore(name: str, score: int):
     conn = sqlite3.connect('highscore.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS highscore
-                (date DATETIME, name TEXT, score INT)''')
+               (date DATETIME, name TEXT, score INT)''')
 
     c.execute("INSERT INTO highscore VALUES (date('now'),?,?)", (name, score))
 
@@ -102,40 +127,30 @@ def saveScore(name: str, score: int):
 def loadHighScore():
     conn = sqlite3.connect('highscore.db')
     c = conn.cursor()
+    highscore = ''
 
     for row in c.execute("SELECT * FROM highscore"):
-        print(row)
-
-    conn.close()
+        highscore = highscore + "{} {} {}\n".format(row[0], row[1], row[2])
+    return highscore
 
 # start programma
-print('quiz gestart')
-name = input('Wat is je naam: ')
-allCharacters = MarvelCharacters()
-chosenCharacter = chooseCharacter(allCharacters)
+
+
 # hints eerst uit discription halen van de gekozen character
 #import time module for sleep
 
 
-punten = 25
+def point_calc(ans,points):
+    global gameover
+    if ans == True and points > 0:
+        points = points+25
+        saveScore(name, points)
+        gameover = False
+    elif ans == False and points > 0:
+        points = points - 10
+        gameover = False
+    elif points <= 0:
+        gameover = True
+    return points
 
-while True:
-    if punten >= 1:  # The player should have at least one point to start the test.
-        character = input('a  b  c  d')  # If the first answer was correct, player can answer this question.
-        if character == 'c':
-            print('Correct! you\'ve earned ' + str(punten) + ' points')
-            punten = punten+25
-            print('Your total amount of points accumilates to ' + str(punten) + ' points')
-            saveScore(name, punten)
-            break
-        elif character == 'hint':
-            punten = punten - 3
-            print(giveHint(chosenCharacter))
-        else:
-            punten = punten - 1  # The player losses one point by clicking on wrong answer.
-            print('Wrong! you\'re points have gone down to ' + str(punten))
-    else:
-        print("Gameover")
-        break
-
-loadHighScore()
+#loadHighScore()
