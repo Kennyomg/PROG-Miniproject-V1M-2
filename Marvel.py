@@ -31,25 +31,29 @@ def MarvelCharacters(offset):
     stringToHash = str(timestamp) + privateApiKey + publicApiKey
     hash_object = hashlib.md5(stringToHash.encode())
     md5Hash = hash_object.hexdigest()
-    apiUrl = 'http://gateway.marvel.com/v1/public/characters?ts={}&apikey={}&hash={}&limit=10&offset={}'.format(timestamp, publicApiKey, md5Hash, offset)
+    apiUrl = 'http://gateway.marvel.com/v1/public/characters?ts={}&apikey={}&hash={}&limit=50&offset={}'.format(timestamp, publicApiKey, md5Hash, offset)
     #print(apiUrl)   # deze moet op gegeven moment uit de code weggehaald worden
     # voorbeeld voor hoe het eruit komt te zien en deze kun je dan in Visual Studio Code gebruiken
     # http://gateway.marvel.com/v1/public/characters?ts=1539531767.861436&apikey=ce72ea27bb97e27dbf4b8be2decb44ee&hash=1efc26ce5b2905641dd9413bfe6662d8
 
-    # Aanroepen van API Url
-    response = requests.get(apiUrl)
+    try:
+        # Aanroepen van API Url
+        print("Trying to do request")
+        response = requests.get(apiUrl)
+    except requests.exceptions.RequestException as e:
+        print(e)
+
+    print("We did it reddit")
 
     # Resultaten van API in Json omzetten naar dictionary
     apiResults = json.loads(response.text)
+
+    print("Did json conversion")
 
     # Alle characters uitlezen uit API
     allCharacters = apiResults['data']['results']
 
     return allCharacters
-
-
-
-
 
 
 def chooseCharacter(apilst):
@@ -58,23 +62,29 @@ def chooseCharacter(apilst):
     descriplst = []  # create fresh list for descriptions
     imagelst = []
 
+    print("filling lists")
     for character in allCharacters:
         charlst.append(character['name'])  # add char to char list
         descriplst.append(character['description'])  # add descrip to descrip list
         imagelst.append(character["thumbnail"]["path"] + '.' + character["thumbnail"]["extension"])
 
+    print("Choose random character")
     randomselect = random.choice(charlst)  # select random char
 
 
-
+    tries = 0
     while True:
         descriptionchar = descriplst[charlst.index(randomselect)]
         imageUrl = imagelst[charlst.index(randomselect)]
         if len(descriptionchar) >= 1:  # if descrip of selected char >1 let prog know
             break
-        else:                                                 # if descrip of selected char non exist let prog know
+        elif tries < 50:                                                 # if descrip of selected char non exist let prog know
+            print("Trying new character")
+            tries += 1
             randomselect = random.choice(charlst)
-
+        else:
+            descriptionchar = "No hint available... sorry"
+            break
     return {'character': randomselect, 'description': descriptionchar, 'imageUrl': imageUrl}  # return character and descrip for later use
 
 #make a list of 4 superhero's to be used in the quiz as options
