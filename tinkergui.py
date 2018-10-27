@@ -1,5 +1,6 @@
 import random
 from io import BytesIO
+from threading import Thread
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 from tkinter import *
@@ -12,6 +13,8 @@ name = ""
 points = 30
 questions = 0
 cor_questions = 0
+question_done = False
+timer = 60
 
 
 def skipqprompt():
@@ -44,13 +47,19 @@ def displayhint(AskHint, hint):
 
 def showquestion():
     global questions
+    global question_done
+
     if questions <= 9:
         questions += 1
         Startscreen.pack_forget()
-        make_quiz_q()
+        make_quiz_q()# Make thread for the timer
+        question_done = False
+        timerThread = Thread(target=timer_countdown)
+        timerThread.start()
     else:
         global name
         global points
+        question_done = True
         saveScore(name, points)
         loadEndscreen()
 
@@ -59,20 +68,42 @@ def loadStartscreen():
 
 
 #check answers skip to line 59 for the rest
-def checkanswer(answer, chosenCharacter):
+def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
     global points
     global cor_questions
-    if answer != chosenCharacter['character']:
-        showinfo(title='Wrong answer',
-                 message = "You've submitted an incorrect answer 10 points have been deducted" )
-        points = points - 10
-    else:
-        showinfo(title='Congratulations',
-                 message= "That's the correct answer 25 points have been granted")
-        points = points + 25
-        cor_questions+= 1
+    global question_done
+
+    if timerRanOut:
+        showinfo(title='Time\'s up!',
+                 message="30 points are deducted and you get your next question")
+        points = points - 30
         quizquestions.pack_forget()
         showquestion()
+    else:
+        if answer != chosenCharacter['character']:
+            showinfo(title='Wrong answer',
+                     message = "You've submitted an incorrect answer 10 points have been deducted" )
+            points = points - 10
+        else:
+            question_done = True
+            showinfo(title='Congratulations',
+                     message= "That's the correct answer 25 points have been granted")
+            points = points + 25
+            cor_questions+= 1
+            quizquestions.pack_forget()
+            showquestion()
+
+
+def timer_countdown():
+    global timer
+    while timer >= 1 and not question_done:
+        timer = timer-1
+        time.sleep(1)
+        #timerLabel.config(text="Time: ".format(timer))
+    timer = 60
+
+    if not question_done:
+        checkanswer(timerRanOut=True)
 
 
 #clear The asking for username sentence
@@ -107,6 +138,9 @@ def make_quiz_q():
     #points displayed on screen
     currentpoints = Label (master=quizquestions,text="Current amount of points:{}".format(points),background ='#ff8400')
     currentpoints.place(relx= 0.15,rely=0.01, anchor=CENTER)
+
+    # points displayed on screen
+    timerLabel.place(relx=1, rely=0.01, anchor=CENTER)
 
     #question header is incorporated into background, because Label lacks the transparant background
 
@@ -241,5 +275,7 @@ startquizbutton.place(relx=0.5,rely=0.6,anchor=CENTER)
 quizbkg = PhotoImage(file="GUI\\quizbkg.png")
 highscorebkg = PhotoImage(file="GUI\\highscores.png")
 
+#timerLabel = Label(master=quizquestions, text="Time: ", background='#ff8400')
+#timerLabel.place(relx=5.5, rely=5.01, anchor=CENTER)
 
 gamewd.mainloop()
