@@ -23,13 +23,25 @@ def skipqprompt():
     if prompt == 'yes':
         points -= 30
         quizquestions.pack_forget()
+        gameover()
         showquestion()
+
+
+def gameover():
+    global points
+    global timer
+    if points <= 0:
+        quizquestions.pack_forget()
+        loadEndscreen()
+        showinfo(title='Gameover', message='You\'re points are at or below 0 you\'ve lost. Try again!')
+
 
 
 def startquiz():
     if len(inputname.get()) >= 1 and inputname.get() != 'Input Username':
         global name
         name = inputname.get()
+        showinfo(title='Quiz started!', message='You\'ve got 60 seconds a question')
         showquestion()
     else:
         showinfo(title='Username error', message = 'Please enter a valid username')
@@ -43,6 +55,7 @@ def displayhint(AskHint, hint):
         hintlabel = Label(master=quizquestions,text = hint,wraplength = 500)
         hintlabel.place(relx=0.5, rely=1, anchor=S)
         AskHint.place_forget()
+        gameover()
 
 
 def showquestion():
@@ -65,6 +78,7 @@ def showquestion():
 
 def loadStartscreen():
     Startscreen.pack()
+    endscreen.pack_forget()
 
 
 #check if answer matches chosen character.
@@ -84,6 +98,7 @@ def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
             showinfo(title='Wrong answer',
                      message = "You've submitted an incorrect answer 10 points have been deducted" )
             points = points - 10
+            gameover()
         else:
             question_done = True
             showinfo(title='Congratulations',
@@ -114,6 +129,13 @@ def Clearinput(event):
 
 def loadEndscreen():
     global timer
+    global cor_questions
+    global questions
+    global points
+    showinfo(title='Statistics',
+             message="Hey there you've reached your end you've answered {} out of {} questions correctly\n "
+                     "this has gotten you {} points"
+             .format(cor_questions,questions,points))
     timer += 99999999999999999999999999999999999999999999999999999
     Startscreen.pack_forget()
     create_endscreen()
@@ -226,6 +248,9 @@ def create_endscreen():
                        font =('Lucida Console',10,'bold'))
     highscores.place(relx=0.3, rely= 0.35, anchor=CENTER)
 
+    restart_button = Button(master=endscreen, text="Restart", command=loadStartscreen)
+    restart_button.place(relx=0.9, rely=0.05, anchor=CENTER)
+
 
 #creating the main window and fixing it's size
 gamewd = Tk()
@@ -278,7 +303,8 @@ startquizbutton.place(relx=0.5,rely=0.6,anchor=CENTER)
 quizbkg = PhotoImage(file="GUI\\quizbkg.png")
 highscorebkg = PhotoImage(file="GUI\\highscores.png")
 
-#timerLabel = Label(master=quizquestions, text="Time: ", background='#ff8400')
-#timerLabel.place(relx=5.5, rely=5.01, anchor=CENTER)
+timerLabel = Label(master=quizquestions, text="Time: ", background='#ff8400')
+timerLabel.place(relx=5.5, rely=5.01, anchor=CENTER)
 
+loadStartscreen()
 gamewd.mainloop()
