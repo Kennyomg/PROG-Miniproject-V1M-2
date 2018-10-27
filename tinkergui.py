@@ -67,7 +67,7 @@ def loadStartscreen():
     Startscreen.pack()
 
 
-#check answers skip to line 59 for the rest
+#check if answer matches chosen character.
 def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
     global points
     global cor_questions
@@ -96,6 +96,7 @@ def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
 
 def timer_countdown():
     global timer
+    global questions
     while timer >= 1 and not question_done:
         timer = timer-1
         time.sleep(1)
@@ -112,6 +113,8 @@ def Clearinput(event):
 
 
 def loadEndscreen():
+    global timer
+    timer += 99999999999999999999999999999999999999999999999999999
     Startscreen.pack_forget()
     create_endscreen()
     endscreen.pack()
@@ -140,7 +143,7 @@ def make_quiz_q():
     currentpoints.place(relx= 0.15,rely=0.01, anchor=CENTER)
 
     # points displayed on screen
-    timerLabel.place(relx=1, rely=0.01, anchor=CENTER)
+    #timerLabel.place(relx=1, rely=0.01, anchor=CENTER)
 
     #question header is incorporated into background, because Label lacks the transparant background
 
