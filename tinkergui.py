@@ -11,13 +11,14 @@ from PIL import Image, ImageTk #pip install pillow
 
 name = ""
 points = 30
-questions = 9
+questions = 0
 cor_questions = 0
 question_done = False
 timer = 60
 
-
 def skipqprompt():
+    """ This function asks the user if you want to skip the current marvel character"""
+
     global points
     prompt = askquestion("Skip question","Are you sure you want to skip this question? It will cost 30 points.",icon='warning')
     if prompt == 'yes':
@@ -28,6 +29,10 @@ def skipqprompt():
 
 
 def gameover():
+    """ This function checks if the user is game over
+    If this is the case the game will end
+    """
+
     global points
     global timer
     if points <= 0:
@@ -36,8 +41,9 @@ def gameover():
         showinfo(title='Gameover', message='You\'re points are at or below 0 you\'ve lost. Try again!')
 
 
-
 def startquiz():
+    """ This function will start the quiz if input name is not empty"""
+
     if len(inputname.get()) >= 1 and inputname.get() != 'Input Username':
         global name
         name = inputname.get()
@@ -48,6 +54,8 @@ def startquiz():
 
 
 def displayhint(AskHint, hint):
+    """ This function will display a hint to the user and subtract points"""
+
     global points
     hintprompt = askquestion("Get hint", 'You sure you want a hint? It will cost 10 points.', icon='warning')
     if hintprompt == 'yes':
@@ -57,7 +65,10 @@ def displayhint(AskHint, hint):
         AskHint.place_forget()
         gameover()
 
+
 def restartgame():
+    """ This function resets the game"""
+
     global questions
     global cor_questions
     global points
@@ -70,6 +81,8 @@ def restartgame():
 
 
 def showquestion():
+    """ This function wil show a new question"""
+
     global questions
     global question_done
 
@@ -88,12 +101,15 @@ def showquestion():
         loadEndscreen()
 
 def loadStartscreen():
+    """ This function loads the start screen of the game """
+
     Startscreen.pack()
     endscreen.pack_forget()
 
 
-#check if answer matches chosen character.
 def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
+    """ This function checks if answer matches chosen character."""
+
     global points
     global cor_questions
     global question_done
@@ -121,6 +137,8 @@ def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
 
 
 def timer_countdown():
+    """ This function counts down from 60 seconds as long as the user did not answer a question"""
+
     global timer
     global questions
     while timer >= 1 and not question_done:
@@ -133,12 +151,15 @@ def timer_countdown():
         checkanswer(timerRanOut=True)
 
 
-#clear The asking for username sentence
 def Clearinput(event):
+    """ This function clears the asking for username sentence"""
+
     inputname.delete(0, "end")
 
 
 def loadEndscreen():
+    """ This function will show the all time high score screen"""
+
     global timer
     global cor_questions
     global questions
@@ -154,6 +175,7 @@ def loadEndscreen():
 
 
 def make_quiz_q():
+    """ This function generates the quiz"""
 
     randomOffset = random.randint(0, 500)
 
@@ -243,7 +265,7 @@ def make_quiz_q():
 
 
 def create_endscreen():
-    #create endscreen with info and highscores
+    """This funciton creates the endscreen with info and highscores"""
 
     endscreen.pack(fill="both", expand=True)
 
@@ -271,7 +293,6 @@ gamewd.title("Super Quizz")
 gamewd.geometry("500x500")
 gamewd.resizable(0,0)
 
-
 #creating start frame
 Startscreen = Frame(master=gamewd)
 Startscreen.pack(fill="both",expand = True)
@@ -281,7 +302,6 @@ quizquestions = Frame(master=gamewd)
 
 #creating end frame
 endscreen = Frame(master=gamewd)
-
 
 #set image as background in startscreen
 bkg = PhotoImage(file="GUI\\bkgmarvel.png")
@@ -305,7 +325,6 @@ inputname.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 #if Left mouse button preseed clear inputname
 inputname.bind("<Button-1>", Clearinput)
-
 
 #startquizbutton on startscreen
 startquizbutton = Button(master=Startscreen,text = 'Start quiz',command=startquiz)

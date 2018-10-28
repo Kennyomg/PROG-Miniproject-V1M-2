@@ -6,24 +6,12 @@ import requests  # pip install requests uitvoeren in Terminal om te installeren 
 import sqlite3
 
 
-#def setTimer(ans):
-#    # set initial timer value
-#    timer = 90
-#    # anwser not yet filled in
-#    while ans == '' and timer >= 1:
-#        timer = timer-1
-#        time.sleep(1)
-#    # the right anwser, timer reset
-#    if ans:
-#        return ans
-#    # timer ran out, anwser is wrong.
-#    elif timer <= 0:
-#        ans = False
-#    return ans
-
-
 def MarvelCharacters(offset):
-    # Maken van de API Url
+    """
+    This function will retrieve characters from the marvel api
+    :param offset: Offset from starting point of results
+    :return: json with Marvel characters
+    """
 
     timestamp = time.time()
     publicApiKey = 'ce72ea27bb97e27dbf4b8be2decb44ee'
@@ -57,6 +45,12 @@ def MarvelCharacters(offset):
 
 
 def chooseCharacter(apilst):
+    """
+    This function will randomly choose a character
+    :param apilst: json with characters from marval api
+    :return: Return random chosen character set with character, description and image
+    """
+
     allCharacters = apilst  # read api list
     charlst = []  # create fresh list for char names
     descriplst = []  # create fresh list for descriptions
@@ -70,7 +64,6 @@ def chooseCharacter(apilst):
 
     print("Choose random character")
     randomselect = random.choice(charlst)  # select random char
-
 
     tries = 0
     while True:
@@ -87,10 +80,14 @@ def chooseCharacter(apilst):
             break
     return {'character': randomselect, 'description': descriptionchar, 'imageUrl': imageUrl}  # return character and descrip for later use
 
-#make a list of 4 superhero's to be used in the quiz as options
-
 
 def options(apilst,chosenCharacter):
+    """
+    This function will make a list of 4 superhero's to be used in the quiz as options
+    :param apilst: List of all retrieved characters
+    :param chosenCharacter: The chosen character
+    :return: Returns the options including the correct answer
+    """
     allCharacters = apilst
     charlist = []
     options = []
@@ -106,8 +103,12 @@ def options(apilst,chosenCharacter):
             return options
 
 
-
 def giveHint(chosenCharacter):
+    """
+    This function will give a hint about the character
+    :param chosenCharacter: The chosen character
+    :return: Returns a part of the description from the chosen character
+    """
     # chooseCharacter(MarvelCharacters())
     description: str = chosenCharacter["description"]
     filterchardots = chosenCharacter["character"].replace('.', '')
@@ -123,6 +124,12 @@ def giveHint(chosenCharacter):
 
 
 def saveScore(name: str, score: int):
+    """
+    This function will save the high score to the sqlite database
+    :param name: Highscore user name
+    :param score: The highscore
+    """
+
     conn = sqlite3.connect('highscore.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS highscore
@@ -135,6 +142,10 @@ def saveScore(name: str, score: int):
 
 
 def loadHighScore():
+    """
+    This function will get all highscores from the database
+    :return: Returns a highscore
+    """
     conn = sqlite3.connect('highscore.db')
     c = conn.cursor()
     highscore = ''
@@ -142,25 +153,3 @@ def loadHighScore():
     for row in c.execute("SELECT * FROM highscore"):
         highscore = highscore + "{} {} {}\n".format(row[0], row[1], row[2])
     return highscore
-
-# start programma
-
-
-# hints eerst uit discription halen van de gekozen character
-#import time module for sleep
-
-
-def point_calc(ans,points):
-    global gameover
-    if ans == True and points > 0:
-        points = points+25
-        saveScore(name, points)
-        gameover = False
-    elif ans == False and points > 0:
-        points = points - 10
-        gameover = False
-    elif points <= 0:
-        gameover = True
-    return points
-
-#loadHighScore()
