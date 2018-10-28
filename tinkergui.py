@@ -11,7 +11,7 @@ from PIL import Image, ImageTk #pip install pillow
 
 name = ""
 points = 30
-questions = 0
+questions = 9
 cor_questions = 0
 question_done = False
 timer = 60
@@ -56,6 +56,17 @@ def displayhint(AskHint, hint):
         hintlabel.place(relx=0.5, rely=1, anchor=S)
         AskHint.place_forget()
         gameover()
+
+def restartgame():
+    global questions
+    global cor_questions
+    global points
+    global timer
+    timer = 60
+    loadStartscreen()
+    questions = 0
+    cor_questions = 0
+    points = 30
 
 
 def showquestion():
@@ -115,7 +126,7 @@ def timer_countdown():
     while timer >= 1 and not question_done:
         timer = timer-1
         time.sleep(1)
-        #timerLabel.config(text="Time: ".format(timer))
+        timerLabel.config(text="Time: ".format(timer))
     timer = 60
 
     if not question_done:
@@ -246,9 +257,9 @@ def create_endscreen():
                        text=highscore,
                        foreground = "#ff0000",
                        font =('Lucida Console',10,'bold'))
-    highscores.place(relx=0.3, rely= 0.35, anchor=CENTER)
+    highscores.place(relx=0.3, rely= 0.3, anchor=N)
 
-    restart_button = Button(master=endscreen, text="Restart", command=loadStartscreen)
+    restart_button = Button(master=endscreen, text="Restart", command=restartgame)
     restart_button.place(relx=0.9, rely=0.05, anchor=CENTER)
 
 
