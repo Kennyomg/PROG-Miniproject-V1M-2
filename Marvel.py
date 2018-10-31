@@ -150,6 +150,6 @@ def loadHighScore():
     c = conn.cursor()
     highscore = ''
 
-    for row in c.execute("SELECT * FROM highscore"):
+    for row in c.execute("SELECT * FROM highscore ORDER BY score DESC"):
         highscore = highscore + "{} {} {}\n".format(row[0], row[1], row[2])
     return highscore
