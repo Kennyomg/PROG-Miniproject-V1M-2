@@ -1,4 +1,3 @@
-import random
 from io import BytesIO
 from threading import Thread
 from urllib.request import urlopen
@@ -120,6 +119,7 @@ def checkanswer(answer="", chosenCharacter=None, timerRanOut=False):
         points = points - 30
         quizquestions.pack_forget()
         showquestion()
+        gameover()
     else:
         if answer != chosenCharacter['character']:
             showinfo(title='Wrong answer',
